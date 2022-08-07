@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Labo.DAL\Labo.DAL.csproj" />
+    <ProjectReference Include="..\Labo.DL\Labo.DL.csproj" />
+    <ProjectReference Include="..\ToolBox.Security\ToolBox.Security.csproj" />
+  </ItemGroup>
+
+</Project>
