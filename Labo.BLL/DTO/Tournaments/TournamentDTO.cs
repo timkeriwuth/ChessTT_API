@@ -19,6 +19,7 @@ namespace Labo.BLL.DTO.Tournaments
         public bool CanRegister { get; set; }
         public bool IsRegistered { get; set; }
         public TournamentStatus Status { get; set; }
+        public int CurrentRound { get; set; }
 
         public TournamentDTO(Tournament tournament)
         {
@@ -33,6 +34,7 @@ namespace Labo.BLL.DTO.Tournaments
             Location = tournament.Location;
             WomenOnly = tournament.WomenOnly;
             Status = tournament.Status;
+            CurrentRound = tournament.CurrentRound;
             Count = tournament.Players.Count;
         }
     }
