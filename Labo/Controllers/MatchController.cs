@@ -2,6 +2,7 @@
 using Labo.BLL.Exceptions;
 using Labo.BLL.Services;
 using Labo.DL.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
@@ -37,6 +38,7 @@ namespace Labo.API.Controllers
         }
 
         [HttpPatch("{id}/result")]
+        [Authorize(Roles = "Admin")]
         public IActionResult Patch([FromRoute] int id, [FromQuery][Required] MatchResult result)
         {
             try
