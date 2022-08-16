@@ -3,12 +3,7 @@ using Labo.BLL.DTO.Users;
 using Labo.BLL.Services;
 using Labo.IL.Services;
 using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
 using System.Security.Authentication;
-using System.Net.Mail;
-using Microsoft.AspNetCore.Authorization;
-using Labo.API.Extensions;
-using Labo.IL.Utils;
 
 namespace Labo.API.Controllers
 {
@@ -18,13 +13,11 @@ namespace Labo.API.Controllers
     {
         private readonly IAuthenticationService _authenticationService;
         private readonly IJwtService _jwtService;
-        private readonly IMailer _mailer;
 
-        public AuthController(IAuthenticationService authenticationService, IJwtService jwtService, IMailer mailer)
+        public AuthController(IAuthenticationService authenticationService, IJwtService jwtService)
         {
             _authenticationService = authenticationService;
             _jwtService = jwtService;
-            _mailer = mailer;
         }
 
         [HttpPost("login")]
@@ -40,81 +33,6 @@ namespace Labo.API.Controllers
             catch (AuthenticationException)
             {
                 return BadRequest("Bad credentials");
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
-        [HttpPost("register")]
-        public IActionResult Register([FromBody] RegisterDTO dto)
-        {
-            try
-            {
-                _authenticationService.Register(dto);
-                return NoContent();
-            }
-            catch (ValidationException ex)
-            {
-                return BadRequest(new ValidationErrorDTO(ex));
-            }
-            catch (SmtpFailedRecipientException)
-            {
-                return BadRequest("Invalid Email");
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
-        [HttpPatch("changePassword")]
-        [Authorize]
-        public IActionResult ChangePassword([FromBody] ChangePasswordDTO dto)
-        {
-            try
-            {
-                _authenticationService.ChangePassword(User.GetId(), dto);
-                return NoContent();
-            }
-            catch (AuthenticationException)
-            {
-                return Unauthorized();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
-        [HttpHead("checkEmail")]
-        public IActionResult CheckEmail([FromQuery][EmailAddress] string email, [FromQuery]Guid? id)
-        {
-            try
-            {
-                if (!_authenticationService.ExistsEmail(email, id))
-                {
-                    return NoContent();
-                }
-                return BadRequest();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
-        [HttpHead("checkUsername")]
-        public IActionResult CheckUsername([FromQuery] string username, [FromQuery] Guid? id)
-        {
-            try
-            {
-                if(!_authenticationService.ExistsUsername(username, id))
-                {
-                    return NoContent();
-                }
-                return BadRequest();
             }
             catch (Exception)
             {

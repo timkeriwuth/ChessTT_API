@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Labo.BLL.DTO.Users
 {
-    public class RegisterDTO
+    public class MemberFormDTO
     {
         [Required]
         [MaxLength(100)]
