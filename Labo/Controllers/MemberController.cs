@@ -62,12 +62,12 @@ namespace Labo.API.Controllers
             }
         }
 
-        [HttpHead("checkEmail")]
-        public IActionResult CheckEmail([FromQuery][EmailAddress] string email, [FromQuery] Guid? id)
+        [HttpHead("canUseEmail")]
+        public IActionResult CanUseEmail([FromQuery][EmailAddress] string email, [FromQuery] Guid? id)
         {
             try
             {
-                if (!_memberService.ExistsEmail(email, id))
+                if (_memberService.ExistsEmail(email, id))
                 {
                     return NoContent();
                 }
@@ -79,12 +79,12 @@ namespace Labo.API.Controllers
             }
         }
 
-        [HttpHead("checkUsername")]
-        public IActionResult CheckUsername([FromQuery] string username, [FromQuery] Guid? id)
+        [HttpHead("canUseUsername")]
+        public IActionResult CanUseUsername([FromQuery] string username, [FromQuery] Guid? id)
         {
             try
             {
-                if (!_memberService.ExistsUsername(username, id))
+                if (_memberService.ExistsUsername(username, id))
                 {
                     return NoContent();
                 }
