@@ -73,30 +73,6 @@ namespace Labo.API.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
-        [Produces(typeof(Guid))]
-        [Authorize(Roles = "Admin")]
-        public IActionResult Delete(Guid id)
-        {
-            try
-            {
-                _tournamentService.Remove(id);
-                return Ok(id);
-            }
-            catch (KeyNotFoundException)
-            {
-                return NotFound();
-            }
-            catch (TournamentException ex)
-            {
-                return Forbid(ex.Message);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
         [HttpPatch("{id}/start")]
         [Authorize(Roles = "Admin")]
         public IActionResult Start(Guid id)
@@ -128,6 +104,30 @@ namespace Labo.API.Controllers
             {
                 _tournamentService.ValidateRound(id);
                 return NoContent();
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (TournamentException ex)
+            {
+                return Forbid(ex.Message);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        [HttpDelete("{id}")]
+        [Produces(typeof(Guid))]
+        [Authorize(Roles = "Admin")]
+        public IActionResult Delete(Guid id)
+        {
+            try
+            {
+                _tournamentService.Remove(id);
+                return Ok(id);
             }
             catch (KeyNotFoundException)
             {

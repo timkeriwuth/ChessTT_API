@@ -6,7 +6,7 @@ namespace Labo.BLL.Services
     {
         void Add(MemberFormDTO dto);
         void ChangePassword(Guid id, ChangePasswordDTO dto);
-        bool ExistsEmail(string email, Guid? id);
-        bool ExistsUsername(string username, Guid? id);
+        bool ExistsEmail(ExistsEmailDTO dto);
+        bool ExistsUsername(ExistsUsernameDTO dto);
     }
 }

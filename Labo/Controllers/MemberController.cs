@@ -63,11 +63,11 @@ namespace Labo.API.Controllers
         }
 
         [HttpHead("existsEmail")]
-        public IActionResult ExistsEmail([FromQuery][EmailAddress] string email, [FromQuery] Guid? id)
+        public IActionResult ExistsEmail([FromQuery] ExistsEmailDTO dto)
         {
             try
             {
-                if (_memberService.ExistsEmail(email, id))
+                if (_memberService.ExistsEmail(dto))
                 {
                     return NoContent();
                 }
@@ -80,11 +80,11 @@ namespace Labo.API.Controllers
         }
 
         [HttpHead("existsUsername")]
-        public IActionResult ExistUsername([FromQuery] string username, [FromQuery] Guid? id)
+        public IActionResult ExistUsername([FromQuery] ExistsUsernameDTO dto)
         {
             try
             {
-                if (_memberService.ExistsUsername(username, id))
+                if (_memberService.ExistsUsername(dto))
                 {
                     return NoContent();
                 }

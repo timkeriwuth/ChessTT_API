@@ -76,14 +76,14 @@ namespace Labo.BLL.Services
             _userRepository.Update(user);
         }
 
-        public bool ExistsEmail(string email, Guid? id)
+        public bool ExistsEmail(ExistsEmailDTO dto)
         {
-            return _userRepository.Any(u => u.Email.ToLower() == email.ToLower() && u.Id != id);
+            return _userRepository.Any(u => u.Email.ToLower() == dto.Email.ToLower() && u.Id != dto.ExcludeId);
         }
 
-        public bool ExistsUsername(string username, Guid? id)
+        public bool ExistsUsername(ExistsUsernameDTO dto)
         {
-            return _userRepository.Any(u => u.Username.ToLower() == username.ToLower() && u.Id != id);
+            return _userRepository.Any(u => u.Username.ToLower() == dto.Username.ToLower() && u.Id != dto.ExcludeId);
         }
     }
 }
