@@ -50,6 +50,15 @@ namespace Labo.DAL.Repositories
             return _entities.Include(t => t.Players).FirstOrDefault(t => t.Id == tournamentId);
         }
 
+        public Tournament? FindOneWithPlayersAndMatches(Guid tournamentId, int? round)
+        {
+            return _entities.Include(t => t.Players)
+                .ThenInclude(p => p.MatchesAsWhite.Where(m => m.Result != MatchResult.NotPlayed && (round == null || m.Round <= round)))
+                .Include(t => t.Players)
+                .ThenInclude(p => p.MatchesAsBlack.Where(m => m.Result != MatchResult.NotPlayed && (round == null || m.Round <= round)))
+                .FirstOrDefault(t => t.Id == tournamentId);
+        }
+
         public void AddPlayer(Tournament tournament, User user)
         {
             tournament.Players.Add(user);

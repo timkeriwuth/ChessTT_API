@@ -36,11 +36,11 @@ namespace Labo.API.Controllers
         }
 
         [HttpGet("{id})")]
-        public IActionResult Get(Guid id)
+        public IActionResult Get(Guid id, [FromQuery]int? round)
         {
             try
             {
-                TournamentDetailsDTO dto = _tournamentService.GetWithPlayers(id);
+                TournamentDetailsDTO dto = _tournamentService.GetWithPlayers(id, round);
                 return Ok(dto);
             }
             catch (KeyNotFoundException)

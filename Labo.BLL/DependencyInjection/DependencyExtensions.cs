@@ -9,6 +9,7 @@ namespace Labo.BLL.DependencyInjection
         {
             services.AddScoped<ITournamentService, TournamentService>();
             services.AddScoped<IAuthenticationService, AuthenticationService>();
+            services.AddScoped<IMatchService, MatchService>();
             return services;
         }
     }

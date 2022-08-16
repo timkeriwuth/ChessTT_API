@@ -10,7 +10,7 @@ namespace Labo.BLL.Services
         Guid Remove(Guid id);
         void Register(Guid userId, Guid tournamentId);
         void Unregister(Guid userId, Guid tournamentId);
-        TournamentDetailsDTO GetWithPlayers(Guid id);
+        TournamentDetailsDTO GetWithPlayers(Guid id, int? round);
         void Start(Guid id);
     }
 }

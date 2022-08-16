@@ -6,7 +6,6 @@ using Labo.DL.Entities;
 using Labo.DL.Enums;
 using Labo.BLL.Exceptions;
 using Labo.IL.Services;
-using System.Net.Mail;
 
 namespace Labo.BLL.Services
 {
@@ -55,10 +54,10 @@ namespace Labo.BLL.Services
             );
         }
 
-        public TournamentDetailsDTO GetWithPlayers(Guid id)
+        public TournamentDetailsDTO GetWithPlayers(Guid tournamentId, int? round)
         {
-            Tournament? tournament = _tournamentRepository.FindOneWithPlayers(id);
-            if (tournament == null)
+            Tournament? tournament = _tournamentRepository.FindOneWithPlayersAndMatches(tournamentId, round);
+            if (tournament is null)
             {
                 throw new KeyNotFoundException();
             }
