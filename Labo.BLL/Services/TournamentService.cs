@@ -62,7 +62,9 @@ namespace Labo.BLL.Services
             {
                 throw new KeyNotFoundException();
             }
-            TournamentDetailsDTO dto = new TournamentDetailsDTO(tournament);
+            TournamentDetailsDTO dto = new(tournament);
+            dto.CanStart = CanStart(tournament);
+            dto.CanValidateRound = CanValidateRound(tournament);
             if (u is not null)
             {
                 dto.IsRegistered = tournament.Players.Contains(u);
@@ -136,12 +138,10 @@ namespace Labo.BLL.Services
             {
                 throw new KeyNotFoundException();
             }
-            if(CanStart(t))
-            {
-                t.Status = TournamentStatus.InProgress;
-                GenerateMatches(t);
-                _tournamentRepository.Update(t);
-            }
+            CheckStart(t);
+            t.Status = TournamentStatus.InProgress;
+            GenerateMatches(t);
+            _tournamentRepository.Update(t);
         }
 
         public void ValidateRound(Guid id)
@@ -151,14 +151,7 @@ namespace Labo.BLL.Services
             {
                 throw new KeyNotFoundException();
             }
-            if(t.Status != TournamentStatus.InProgress)
-            {
-                throw new TournamentException("Cannot validate a round when the tournament is not in progress");
-            }
-            if (t.Matches.Any(m => m.Round <= t.CurrentRound && m.Result == MatchResult.NotPlayed))
-            {
-                throw new TournamentException("Cannot validate a round when the the matches are not played");
-            }
+            CheckValidateRound(t);
             if (t.CurrentRound == (t.Players.Count() - 1) * 2)
             {
                 t.Status = TournamentStatus.Closed;
@@ -249,6 +242,54 @@ namespace Labo.BLL.Services
             CheckCategories(tournament, player);
         }
 
+        private static bool CanValidateRound(Tournament t)
+        {
+            try
+            {
+                CheckValidateRound(t);
+                return true;
+            }
+            catch (Exception) { return false; }
+        }
+
+        private static void CheckValidateRound(Tournament t)
+        {
+            if (t.Status != TournamentStatus.InProgress)
+            {
+                throw new TournamentException("Cannot validate a round when the tournament is not in progress");
+            }
+            if (t.Matches.Any(m => m.Round <= t.CurrentRound && m.Result == MatchResult.NotPlayed))
+            {
+                throw new TournamentException("Cannot validate a round when the the matches are not played");
+            }
+        }
+
+        private static bool CanStart(Tournament t)
+        {
+            try
+            {
+                CheckStart(t);
+                return true;
+            }
+            catch (Exception) { return false; }
+        }
+
+        private static void CheckStart(Tournament t)
+        {
+            if (t.Status != TournamentStatus.WaitingForPlayers)
+            {
+                throw new TournamentException("Cannot start a tournament that has already started");
+            }
+            if (t.Players.Count < t.MinPlayers)
+            {
+                throw new TournamentException("Not enough players");
+            }
+            if (t.EndOfRegistrationDate < DateTime.Now)
+            {
+                throw new TournamentException("Cannot start a tournament before the end of registration date");
+            }
+        }
+
         private static void CheckCategories(Tournament tournament, User player)
         {
             bool flag = false;
@@ -292,24 +333,7 @@ namespace Labo.BLL.Services
             }
         }
 
-        private static bool CanStart(Tournament t)
-        {
-            if (t.Status != TournamentStatus.WaitingForPlayers)
-            {
-                throw new TournamentException("Cannot start a tournament that has already started");
-            }
-            if (t.Players.Count < t.MinPlayers)
-            {
-                throw new TournamentException("Not enough players");
-            }
-            if(t.EndOfRegistrationDate < DateTime.Now)
-            {
-                throw new TournamentException("Cannot start a tournament before the end of registration date");
-            }
-            return true;
-        }
-
-        private void GenerateMatches(Tournament t)
+        private static void GenerateMatches(Tournament t)
         {
             List<Guid> players = t.Players.Select(p => p.Id).ToList();
         }
