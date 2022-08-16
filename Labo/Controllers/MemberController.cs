@@ -62,8 +62,8 @@ namespace Labo.API.Controllers
             }
         }
 
-        [HttpHead("canUseEmail")]
-        public IActionResult CanUseEmail([FromQuery][EmailAddress] string email, [FromQuery] Guid? id)
+        [HttpHead("existsEmail")]
+        public IActionResult ExistsEmail([FromQuery][EmailAddress] string email, [FromQuery] Guid? id)
         {
             try
             {
@@ -79,8 +79,8 @@ namespace Labo.API.Controllers
             }
         }
 
-        [HttpHead("canUseUsername")]
-        public IActionResult CanUseUsername([FromQuery] string username, [FromQuery] Guid? id)
+        [HttpHead("existsUsername")]
+        public IActionResult ExistUsername([FromQuery] string username, [FromQuery] Guid? id)
         {
             try
             {
