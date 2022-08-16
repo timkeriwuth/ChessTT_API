@@ -8,11 +8,11 @@ namespace Labo.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class InscriptionController : ControllerBase
+    public class TournamentInscriptionController : ControllerBase
     {
         private readonly ITournamentService _tournamentService;
 
-        public InscriptionController(ITournamentService tournamentService)
+        public TournamentInscriptionController(ITournamentService tournamentService)
         {
             _tournamentService = tournamentService;
         }
