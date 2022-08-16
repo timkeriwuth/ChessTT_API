@@ -88,13 +88,16 @@ namespace Labo.API.Controllers
             }
         }
 
-        [HttpGet("checkEmail")]
-        [Produces(typeof(bool))]
+        [HttpHead("checkEmail")]
         public IActionResult CheckEmail([FromQuery][EmailAddress] string email, [FromQuery]Guid? id)
         {
             try
             {
-                return Ok(!_authenticationService.ExistsEmail(email, id));
+                if (!_authenticationService.ExistsEmail(email, id))
+                {
+                    return NoContent();
+                }
+                return BadRequest();
             }
             catch (Exception)
             {
@@ -102,13 +105,16 @@ namespace Labo.API.Controllers
             }
         }
 
-        [HttpGet("checkUsername")]
-        [Produces(typeof(bool))]
+        [HttpHead("checkUsername")]
         public IActionResult CheckUsername([FromQuery] string username, [FromQuery] Guid? id)
         {
             try
             {
-                return Ok(!_authenticationService.ExistsUsername(username, id));
+                if(!_authenticationService.ExistsUsername(username, id))
+                {
+                    return NoContent();
+                }
+                return BadRequest();
             }
             catch (Exception)
             {
