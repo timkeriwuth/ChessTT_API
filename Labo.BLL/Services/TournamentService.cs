@@ -22,9 +22,9 @@ namespace Labo.BLL.Services
             _mailer = mailer;
         }
 
-        public IEnumerable<TournamentDTO> Find(TournamentCriteriaDTO criteria, Guid id)
+        public IEnumerable<TournamentDTO> Find(TournamentCriteriaDTO criteria, Guid userId)
         {
-            User? u = _userRepository.FindOne(id);
+            User? u = _userRepository.FindOne(userId);
 
             return _tournamentRepository.FindWithPlayersByCriteriaOrderByCreationDateDesc(
                 criteria.Name,
@@ -54,14 +54,21 @@ namespace Labo.BLL.Services
             );
         }
 
-        public TournamentDetailsDTO GetWithPlayers(Guid tournamentId, int? round)
+        public TournamentDetailsDTO GetWithPlayers(Guid tournamentId, int? round, Guid userId)
         {
+            User? u = _userRepository.FindOne(userId);
             Tournament? tournament = _tournamentRepository.FindOneWithPlayersAndMatches(tournamentId, round);
             if (tournament is null)
             {
                 throw new KeyNotFoundException();
             }
-            return new TournamentDetailsDTO(tournament);
+            TournamentDetailsDTO dto = new TournamentDetailsDTO(tournament);
+            if (u is not null)
+            {
+                dto.IsRegistered = tournament.Players.Contains(u);
+                dto.CanRegister = CanRegister(u, tournament);
+            }
+            return dto;
         }
 
         public Guid Add(TournamentAddDTO dto)

@@ -40,7 +40,7 @@ namespace Labo.API.Controllers
         {
             try
             {
-                TournamentDetailsDTO dto = _tournamentService.GetWithPlayers(id, round);
+                TournamentDetailsDTO dto = _tournamentService.GetWithPlayers(id, round, User.GetId());
                 return Ok(dto);
             }
             catch (KeyNotFoundException)
