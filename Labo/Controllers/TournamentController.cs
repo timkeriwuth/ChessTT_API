@@ -1,4 +1,5 @@
 ﻿using Labo.API.DTO;
+using Labo.API.Extensions;
 using Labo.BLL.DTO.Tournaments;
 using Labo.BLL.Exceptions;
 using Labo.BLL.Services;
@@ -20,15 +21,13 @@ namespace Labo.API.Controllers
         }
 
         [HttpGet]
-        [Produces(typeof(IndexDTO<IEnumerable<TournamentDTO>>))]
+        [Produces(typeof(IEnumerable<TournamentDTO>))]
         public IActionResult Get([FromQuery] TournamentCriteriaDTO criteria)
         {
             try
             {
-                return Ok(new IndexDTO<IEnumerable<TournamentDTO>>(
-                    _tournamentService.Find(criteria),
-                    _tournamentService.Count(criteria)
-                ));
+                Response.AddTotalHeader(_tournamentService.Count(criteria));
+                return Ok(_tournamentService.Find(criteria, User.GetId()));
             }
             catch (Exception)
             {
@@ -83,6 +82,29 @@ namespace Labo.API.Controllers
             {
                 _tournamentService.Remove(id);
                 return Ok(id);
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (TournamentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        [HttpPatch("{id}/start")]
+        [Authorize(Roles = "Admin")]
+        public IActionResult Start(Guid id)
+        {
+            try
+            {
+                _tournamentService.Start(id);
+                return NoContent();
             }
             catch (KeyNotFoundException)
             {

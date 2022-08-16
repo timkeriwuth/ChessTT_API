@@ -5,6 +5,8 @@ using System.ComponentModel.DataAnnotations;
 using Labo.DL.Entities;
 using Labo.DL.Enums;
 using Labo.BLL.Exceptions;
+using Labo.IL.Services;
+using System.Net.Mail;
 
 namespace Labo.BLL.Services
 {
@@ -12,22 +14,35 @@ namespace Labo.BLL.Services
     {
         private readonly ITournamentRepository _tournamentRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IMailer _mailer;
 
-        public TournamentService(ITournamentRepository tournamentRepository, IUserRepository userRepository)
+        public TournamentService(ITournamentRepository tournamentRepository, IUserRepository userRepository, IMailer mailer)
         {
             _tournamentRepository = tournamentRepository;
             _userRepository = userRepository;
+            _mailer = mailer;
         }
 
-        public IEnumerable<TournamentDTO> Find(TournamentCriteriaDTO criteria)
+        public IEnumerable<TournamentDTO> Find(TournamentCriteriaDTO criteria, Guid id)
         {
+            User? u = _userRepository.FindOne(id);
+
             return _tournamentRepository.FindWithPlayersByCriteriaOrderByCreationDateDesc(
                 criteria.Name,
                 criteria.Category,
                 criteria.Statuses,
                 criteria.WomenOnly,
                 criteria.Offset
-            ).ToDTO();
+            ).Select(t =>
+            {
+                TournamentDTO dto = new(t);
+                if (u is not null)
+                {
+                    dto.IsRegistered = t.Players.Contains(u);
+                    dto.CanRegister = CanRegister(u, t);
+                }
+                return dto;
+            });
         }
 
         public int Count(TournamentCriteriaDTO criteria)
@@ -38,6 +53,16 @@ namespace Labo.BLL.Services
                 criteria.Statuses,
                 criteria.WomenOnly
             );
+        }
+
+        public TournamentDetailsDTO GetWithPlayers(Guid id)
+        {
+            Tournament? tournament = _tournamentRepository.FindOneWithPlayers(id);
+            if (tournament == null)
+            {
+                throw new KeyNotFoundException();
+            }
+            return new TournamentDetailsDTO(tournament);
         }
 
         public Guid Add(TournamentAddDTO dto)
@@ -53,13 +78,26 @@ namespace Labo.BLL.Services
             t.Status = TournamentStatus.WaitingForPlayers;
             t.CreationDate = DateTime.Now;
             t.UpdateDate = t.CreationDate;
-            _tournamentRepository.Add(t);
+            Tournament newTournament = _tournamentRepository.Add(t);
+            IEnumerable<User> canParticipatePlayers = _userRepository
+                .Find(u => CanRegister(u, newTournament));
+            Task.Run(() => { 
+                try
+                {
+                    _mailer.Send(
+                        "New Tournament",
+                        $"<p>A new tournmaent {t.Name} is created</p>",
+                        canParticipatePlayers.Select(p => p.Email).ToArray()
+                    );
+                }
+                catch (Exception) { }
+            });
             return t.Id;
         }
 
         public Guid Remove(Guid id)
         {
-            Tournament? t = _tournamentRepository.FindOne(id);
+            Tournament? t = _tournamentRepository.FindOneWithPlayers(id);
             if (t is null)
             {
                 throw new KeyNotFoundException();
@@ -69,21 +107,91 @@ namespace Labo.BLL.Services
                 throw new TournamentException("Cannot remove a tournament that has already started");
             }
             _tournamentRepository.Remove(t);
+            Task.Run(() =>
+            {
+                try
+                {
+                    _mailer.Send(
+                        "Tournament canceled",
+                        $"<p>The tournament {t.Name} has been canceled</p>",
+                        t.Players.Select(p => p.Email).ToArray()
+                    );
+                }
+                catch (Exception) { }
+            });
+
             return id;
+        }
+
+        public void Start(Guid id)
+        {
+            Tournament? t = _tournamentRepository.FindOneWithPlayers(id);
+            if (t is null)
+            {
+                throw new KeyNotFoundException();
+            }
+            if(CanStart(t))
+            {
+                t.Status = TournamentStatus.InProgress;
+                GenerateMatches(t);
+                _tournamentRepository.Update(t);
+            }
         }
 
         public void Register(Guid userId, Guid tournamentId)
         {
             User? player = _userRepository.FindOne(userId);
             Tournament? tournament = _tournamentRepository.FindOneWithPlayers(tournamentId);
-            if(tournament == null)
+            if (tournament == null)
             {
                 throw new KeyNotFoundException();
             }
-            if (player == null || player.IsDeleted)
+            if (player == null)
             {
                 throw new UnauthorizedAccessException();
             }
+            CheckCanRegister(player, tournament);
+            _tournamentRepository.AddPlayer(tournament, player);
+        }
+
+        public void Unregister(Guid userId, Guid tournamentId)
+        {
+            User? player = _userRepository.FindOne(userId);
+            Tournament? tournament = _tournamentRepository.FindOneWithPlayers(tournamentId);
+            if (tournament == null)
+            {
+                throw new KeyNotFoundException();
+            }
+            if (player == null)
+            {
+                throw new UnauthorizedAccessException();
+            }
+            if (tournament.Status != TournamentStatus.WaitingForPlayers)
+            {
+                throw new TournamentRegistrationException("Cannot unregister when a tournament has already started");
+            }
+            if (!tournament.Players.Contains(player))
+            {
+                throw new TournamentRegistrationException("This player is not in the tournament");
+            }
+            _tournamentRepository.RemovePlayer(tournament, player);
+        }
+
+        private static bool CanRegister(User player, Tournament tournament)
+        {
+            try
+            {
+                CheckCanRegister(player, tournament);
+                return true;
+            }
+            catch(Exception)
+            {
+                return false;
+            }
+        }
+
+        private static void CheckCanRegister(User player, Tournament tournament)
+        {
             if (tournament.Status != TournamentStatus.WaitingForPlayers)
             {
                 throw new TournamentRegistrationException("Cannot register when a tournament has already started");
@@ -106,33 +214,9 @@ namespace Labo.BLL.Services
             }
             CheckElo(tournament, player);
             CheckCategories(tournament, player);
-            _tournamentRepository.AddPlayer(tournament, player);
         }
 
-        public void Unregister(Guid userId, Guid tournamentId)
-        {
-            User? player = _userRepository.FindOne(userId);
-            Tournament? tournament = _tournamentRepository.FindOneWithPlayers(tournamentId);
-            if (tournament == null)
-            {
-                throw new KeyNotFoundException();
-            }
-            if (player == null || player.IsDeleted)
-            {
-                throw new UnauthorizedAccessException();
-            }
-            if (tournament.Status != TournamentStatus.WaitingForPlayers)
-            {
-                throw new TournamentRegistrationException("Cannot unregister when a tournament has already started");
-            }
-            if (!tournament.Players.Contains(player))
-            {
-                throw new TournamentRegistrationException("This player is not in the tournament");
-            }
-            _tournamentRepository.RemovePlayer(tournament, player);
-        }
-
-        private void CheckCategories(Tournament tournament, User player)
+        private static void CheckCategories(Tournament tournament, User player)
         {
             bool flag = false;
             int age = CalculateAge(tournament, player);
@@ -154,7 +238,7 @@ namespace Labo.BLL.Services
             }
         }
 
-        private int CalculateAge(Tournament tournament, User player)
+        private static int CalculateAge(Tournament tournament, User player)
         {
             int age = tournament.EndOfRegistrationDate.Year - player.BirthDate.Year;
 
@@ -163,7 +247,7 @@ namespace Labo.BLL.Services
             return age;
         }
 
-        private void CheckElo(Tournament tournament, User player)
+        private static void CheckElo(Tournament tournament, User player)
         {
             if(tournament.EloMin != null && player.Elo < tournament.EloMin)
             {
@@ -175,14 +259,26 @@ namespace Labo.BLL.Services
             }
         }
 
-        public TournamentDetailsDTO GetWithPlayers(Guid id)
+        private static bool CanStart(Tournament t)
         {
-            Tournament? tournament = _tournamentRepository.FindOneWithPlayers(id);
-            if (tournament == null)
+            if (t.Status != TournamentStatus.WaitingForPlayers)
             {
-                throw new KeyNotFoundException();
+                throw new TournamentException("Cannot start a tournament that has already started");
             }
-            return new TournamentDetailsDTO(tournament);
+            if (t.Players.Count < t.MinPlayers)
+            {
+                throw new TournamentException("Not enough players");
+            }
+            if(t.EndOfRegistrationDate < DateTime.Now)
+            {
+                throw new TournamentException("Cannot start a tournament before the end of registration date");
+            }
+            return true;
+        }
+
+        private void GenerateMatches(Tournament t)
+        {
+            List<Guid> players = t.Players.Select(p => p.Id).ToList();
         }
     }
 }

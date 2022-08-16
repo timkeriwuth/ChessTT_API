@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Labo.IL", "Labo.IL\Labo.IL.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ToolBox.EF", "ToolBox.EF\ToolBox.EF.csproj", "{E847B7A8-DA83-41AE-982D-C5FFA265F6F5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToolBox.Security", "ToolBox.Security\ToolBox.Security.csproj", "{6DA8F593-3B61-4981-898D-A545096AA170}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ToolBox.Security", "ToolBox.Security\ToolBox.Security.csproj", "{6DA8F593-3B61-4981-898D-A545096AA170}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

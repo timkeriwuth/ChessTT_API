@@ -6,11 +6,6 @@ namespace Labo.BLL.Mappers
 {
     internal static class TournamentMappers
     {
-        public static IEnumerable<TournamentDTO> ToDTO(this IEnumerable<Tournament> entities)
-        {
-            return entities.Select(t => new TournamentDTO(t));
-        }
-
         public static Tournament ToEntity(this TournamentAddDTO dto)
         {
             return new Tournament

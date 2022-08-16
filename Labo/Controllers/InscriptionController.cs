@@ -17,7 +17,7 @@ namespace Labo.API.Controllers
             _tournamentService = tournamentService;
         }
 
-        [HttpPost("{id})")]
+        [HttpPost("{id}")]
         [Authorize(Roles = "Admin, Player")]
         public IActionResult Post(Guid id)
         {
@@ -30,6 +30,10 @@ namespace Labo.API.Controllers
             {
                 return NotFound();
             }
+            catch (UnauthorizedAccessException)
+            {
+                return Unauthorized();
+            }
             catch (TournamentRegistrationException ex)
             {
                 return BadRequest(ex.Message);
@@ -40,7 +44,7 @@ namespace Labo.API.Controllers
             }
         }
 
-        [HttpDelete("{id})")]
+        [HttpDelete("{id}")]
         [Authorize(Roles = "Admin, Player")]
         public IActionResult Delete(Guid id)
         {

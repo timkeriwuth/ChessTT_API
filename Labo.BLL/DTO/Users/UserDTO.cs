@@ -7,6 +7,7 @@ namespace Labo.BLL.DTO.Users
     {
         public Guid Id { get; set; }
         public string Username { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
         public DateTime BirthDate { get; set; }
         public int Elo { get; set; }
         public UserGender Gender { get; set; }
@@ -16,6 +17,7 @@ namespace Labo.BLL.DTO.Users
         {
             Id = user.Id;
             Username = user.Username;
+            Email = user.Email;
             BirthDate = user.BirthDate;
             Elo = user.Elo;
             Gender = user.Gender;

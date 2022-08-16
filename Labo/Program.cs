@@ -26,28 +26,30 @@ namespace Labo.API
             builder.Services.AddRepositories();
             builder.Services.AddBusinessServices();
 
-            JwtConfiguration config = builder.Configuration.GetSection("JwtSettings").Get<JwtConfiguration>();
+            JwtConfiguration jwtConfig = builder.Configuration.GetSection("JwtSettings").Get<JwtConfiguration>();
+            builder.Services.AddJwt(jwtConfig);
 
-            builder.Services.AddJwt(config);
+            MailerConfig mailerConfig = builder.Configuration.GetSection("Smtp").Get<MailerConfig>();
+            builder.Services.AddMailer(mailerConfig);
 
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(
                 JwtBearerDefaults.AuthenticationScheme, 
                 options => options.TokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidateIssuer = config.ValidateIssuer,
-                    ValidateAudience = config.ValidateAudience,
-                    ValidateLifetime = config.ValidateLifeTime,
-                    ValidIssuer = config.Issuer,
-                    ValidAudience = config.Audience,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config.Signature)),
+                    ValidateIssuer = jwtConfig.ValidateIssuer,
+                    ValidateAudience = jwtConfig.ValidateAudience,
+                    ValidateLifetime = jwtConfig.ValidateLifeTime,
+                    ValidIssuer = jwtConfig.Issuer,
+                    ValidAudience = jwtConfig.Audience,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfig.Signature)),
                 }
             );
 
 
             builder.Services.AddControllers().AddJsonOptions(opts =>
             {
-                var enumConverter = new JsonStringEnumConverter();
-                opts.JsonSerializerOptions.Converters.Add(enumConverter);
+                opts.JsonSerializerOptions.Converters
+                    .Add(new JsonStringEnumConverter());
             });
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
@@ -73,15 +75,24 @@ namespace Labo.API
                 c.AddSecurityRequirement(securityRequirement);
             });
 
+            builder.Services.AddCors(options => options.AddDefaultPolicy(b =>
+            {
+                b.AllowAnyHeader();
+                b.AllowAnyMethod();
+                b.AllowAnyOrigin();
+            }));
+
 
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
+            // if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
+            app.UseCors();
 
             app.UseAuthentication();
 

@@ -24,14 +24,14 @@ namespace Labo.BLL.DTO.Tournaments
 
         [Required]
         [Range(2, 16)]
-        [GreaterOrEqualThanAttribute(nameof(MinPlayers))]
+        [GreaterOrEqualThan(nameof(MinPlayers))]
         public int MaxPlayers { get; set; }
 
         [Range(0, 3000)]
         public int? EloMin { get; set; }
 
         [Range(0, 3000)]
-        [GreaterOrEqualThanAttribute(nameof(EloMin))]
+        [GreaterOrEqualThan(nameof(EloMin))]
         public int? EloMax { get; set; }
 
         [Required]

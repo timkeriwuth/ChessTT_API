@@ -17,13 +17,13 @@ namespace Labo.IL.Services
             _tokenHandler = tokenHandler;
         }
 
-        public string CreateToken(string identifier, string role)
+        public string CreateToken(string identifier, string email, string role)
         {
             DateTime now = DateTime.Now;
             JwtSecurityToken token = new(
                 _config.Issuer,
                 _config.Audience,
-                CreateClaims(identifier, role),
+                CreateClaims(identifier, email, role),
                 now,
                 now.AddSeconds(_config.LifeTime),
                 CreateCredentials()
@@ -42,10 +42,11 @@ namespace Labo.IL.Services
             return new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.Signature));
         }
 
-        private IEnumerable<Claim> CreateClaims(string identifier, string role)
+        private IEnumerable<Claim> CreateClaims(string identifier, string email, string role)
         {
-            yield return new Claim(ClaimTypes.NameIdentifier, identifier);
+            yield return new Claim(ClaimTypes.Sid, identifier);
             yield return new Claim(ClaimTypes.Role, role);
+            yield return new Claim(ClaimTypes.Email, email);
         }
     }
 }

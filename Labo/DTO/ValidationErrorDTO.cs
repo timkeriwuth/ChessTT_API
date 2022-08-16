@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Labo.API.DTO
 {
@@ -22,6 +17,12 @@ namespace Labo.API.DTO
             {
                 Errors = new Dictionary<string, string[]> { { ex.Source, new string[] { ex.Message } } };
             }
+        }
+
+        public ValidationErrorDTO(string field, string message)
+        {
+            TraceId = Activity.Current?.Id;
+            Errors = new Dictionary<string, string[]> { { field, new string[] { message } } };
         }
     }
 }

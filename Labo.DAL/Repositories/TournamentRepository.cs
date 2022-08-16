@@ -14,17 +14,18 @@ namespace Labo.DAL.Repositories
             string? name,
             TournamentCategory? category,
             IEnumerable<TournamentStatus>? statuses,
-            bool wonenOnly = false,
+            bool womenOnly = false,
             int offset = 0,
             int limit = 10
         )
         {
             return _entities
+                .Include(t => t.Players)
                 .Where(t => name == null || t.Name.ToLower().Contains(name))
                 .Where(t => category == null || t.Categories.HasFlag((TournamentCategory)category))
                 .Where(t => statuses == null || !statuses.Any() || statuses.Contains(t.Status))
-                .Where(t => !wonenOnly || t.WomenOnly)
-                .OrderByDescending(t => t.CreationDate)
+                .Where(t => !womenOnly || t.WomenOnly)
+                .OrderByDescending(t => t.UpdateDate)
                 .Skip(offset)
                 .Take(limit);
         }

@@ -9,5 +9,14 @@ namespace Labo.DAL.Repositories
         public UserRepository(TournamentContext context) : base(context)
         {
         }
+        public override User? FindOne(params object[] ids)
+        {
+            User? u = base.FindOne(ids);
+            if(u is null || u.IsDeleted)
+            {
+                return null;
+            }
+            return u;
+        }
     }
 }

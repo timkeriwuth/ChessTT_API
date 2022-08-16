@@ -15,6 +15,7 @@ namespace Labo.BLL.Mappers
             return new User
             {
                 Username = dto.Username,
+                Email = dto.Email,
                 BirthDate = dto.BirthDate,
                 Gender = dto.Gender,
             };

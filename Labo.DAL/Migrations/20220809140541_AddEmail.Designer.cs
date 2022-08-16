@@ -4,6 +4,7 @@ using Labo.DAL.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Labo.DAL.Migrations
 {
     [DbContext(typeof(TournamentContext))]
-    partial class TournamentContextModelSnapshot : ModelSnapshot
+    [Migration("20220809140541_AddEmail")]
+    partial class AddEmail
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,41 +23,6 @@ namespace Labo.DAL.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
-
-            modelBuilder.Entity("Labo.DL.Entities.Match", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<Guid>("BlackId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Result")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Round")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("TournamentId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("WhiteId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BlackId");
-
-                    b.HasIndex("TournamentId");
-
-                    b.HasIndex("WhiteId");
-
-                    b.ToTable("Match");
-                });
 
             modelBuilder.Entity("Labo.DL.Entities.Tournament", b =>
                 {
@@ -176,33 +143,6 @@ namespace Labo.DAL.Migrations
                     b.ToTable("TournamentUser");
                 });
 
-            modelBuilder.Entity("Labo.DL.Entities.Match", b =>
-                {
-                    b.HasOne("Labo.DL.Entities.User", "Black")
-                        .WithMany("MatchesAsBlack")
-                        .HasForeignKey("BlackId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Labo.DL.Entities.Tournament", "Tournament")
-                        .WithMany("Matches")
-                        .HasForeignKey("TournamentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Labo.DL.Entities.User", "White")
-                        .WithMany("MatchesAsWhite")
-                        .HasForeignKey("WhiteId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Black");
-
-                    b.Navigation("Tournament");
-
-                    b.Navigation("White");
-                });
-
             modelBuilder.Entity("TournamentUser", b =>
                 {
                     b.HasOne("Labo.DL.Entities.User", null)
@@ -216,18 +156,6 @@ namespace Labo.DAL.Migrations
                         .HasForeignKey("TournamentsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Labo.DL.Entities.Tournament", b =>
-                {
-                    b.Navigation("Matches");
-                });
-
-            modelBuilder.Entity("Labo.DL.Entities.User", b =>
-                {
-                    b.Navigation("MatchesAsBlack");
-
-                    b.Navigation("MatchesAsWhite");
                 });
 #pragma warning restore 612, 618
         }

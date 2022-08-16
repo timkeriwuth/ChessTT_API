@@ -12,12 +12,12 @@ namespace ToolBox.EF.Repository
         }
     }
 
-    public abstract class RepositoryBase<TEntity> : RepositoryBase, IRepository<TEntity> where TEntity : class
+    public abstract class RepositoryBase<TEntity> : RepositoryBase, IRepository<TEntity> 
+        where TEntity : class
     {
         protected DbSet<TEntity> _entities => _context.Set<TEntity>();
 
-        protected RepositoryBase(DbContext context)
-            : base(context) { }
+        public RepositoryBase(DbContext context): base(context) { }
 
         public virtual IEnumerable<TEntity> Find()
         {

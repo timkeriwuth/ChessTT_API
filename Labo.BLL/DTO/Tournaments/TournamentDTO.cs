@@ -12,9 +12,13 @@ namespace Labo.BLL.DTO.Tournaments
         public int MaxPlayers { get; set; }
         public int? EloMin { get; set; }
         public int? EloMax { get; set; }
-        public TournamentCategory Categories { get; set; }
+        public IEnumerable<TournamentCategory> Categories { get; set; }
         public bool WomenOnly { get; set; }
         public DateTime EndOfRegistrationDate { get; set; }
+        public int Count { get; set; }
+        public bool CanRegister { get; set; }
+        public bool IsRegistered { get; set; }
+        public TournamentStatus Status { get; set; }
 
         public TournamentDTO(Tournament tournament)
         {
@@ -24,10 +28,12 @@ namespace Labo.BLL.DTO.Tournaments
             MaxPlayers = tournament.MaxPlayers;
             EloMin = tournament.EloMin;
             EloMax = tournament.EloMax;
-            Categories = tournament.Categories;
+            Categories = Enum.GetValues<TournamentCategory>().Where(v => tournament.Categories.HasFlag(v));
             EndOfRegistrationDate = tournament.EndOfRegistrationDate;
             Location = tournament.Location;
             WomenOnly = tournament.WomenOnly;
+            Status = tournament.Status;
+            Count = tournament.Players.Count;
         }
     }
 }

@@ -11,10 +11,10 @@ namespace Labo.BLL.DTO.Users
         public string Username { get; set; } = string.Empty;
 
         [Required]
-        public string Password { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
 
-        [Required]
         [BeforeToday]
+        [Required]
         public DateTime BirthDate { get; set; }
 
         [Range(0,3000)]
