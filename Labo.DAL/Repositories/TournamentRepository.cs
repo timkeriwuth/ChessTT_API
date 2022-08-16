@@ -59,6 +59,12 @@ namespace Labo.DAL.Repositories
                 .FirstOrDefault(t => t.Id == tournamentId);
         }
 
+        public Tournament? FindOneWithPlayersAndMatches(Guid tournamentId)
+        {
+            return _entities.Include(t => t.Players).Include(t => t.Matches)
+                .FirstOrDefault(t => t.Id == tournamentId);
+        }
+
         public void AddPlayer(Tournament tournament, User user)
         {
             tournament.Players.Add(user);

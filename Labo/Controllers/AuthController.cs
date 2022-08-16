@@ -39,7 +39,7 @@ namespace Labo.API.Controllers
             }
             catch (AuthenticationException)
             {
-                return Unauthorized();
+                return BadRequest("Bad credentials");
             }
             catch (Exception)
             {

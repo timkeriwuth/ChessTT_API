@@ -137,6 +137,33 @@ namespace Labo.BLL.Services
             }
         }
 
+        public void ValidateRound(Guid id)
+        {
+            Tournament? t = _tournamentRepository.FindOneWithPlayersAndMatches(id);
+            if (t is null)
+            {
+                throw new KeyNotFoundException();
+            }
+            if(t.Status != TournamentStatus.InProgress)
+            {
+                throw new TournamentException("Cannot validate a round when the tournament is not in progress");
+            }
+            if (t.Matches.Any(m => m.Round <= t.CurrentRound && m.Result == MatchResult.NotPlayed))
+            {
+                throw new TournamentException("Cannot validate a round when the the matches are not played");
+            }
+            if (t.CurrentRound == (t.Players.Count() - 1) * 2)
+            {
+                t.Status = TournamentStatus.Closed;
+            }
+            else
+            {
+                t.CurrentRound++;
+            }
+            _tournamentRepository.Update(t);
+
+        }
+
         public void Register(Guid userId, Guid tournamentId)
         {
             User? player = _userRepository.FindOne(userId);

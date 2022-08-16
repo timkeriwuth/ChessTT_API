@@ -12,5 +12,6 @@ namespace Labo.BLL.Services
         void Unregister(Guid userId, Guid tournamentId);
         TournamentDetailsDTO GetWithPlayers(Guid id, int? round);
         void Start(Guid id);
+        void ValidateRound(Guid id);
     }
 }

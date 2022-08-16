@@ -36,7 +36,7 @@ namespace Labo.API.Controllers
             }
             catch (TournamentRegistrationException ex)
             {
-                return BadRequest(ex.Message);
+                return Forbid(ex.Message);
             }
             catch (Exception)
             {
@@ -59,7 +59,7 @@ namespace Labo.API.Controllers
             }
             catch (TournamentRegistrationException ex)
             {
-                return BadRequest(ex.Message);
+                return Forbid(ex.Message);
             }
             catch (Exception)
             {

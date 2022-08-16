@@ -12,5 +12,6 @@ namespace Labo.DAL.Repositories
         void AddPlayer(Tournament tournament, User user);
         void RemovePlayer(Tournament tournament, User user);
         Tournament? FindOneWithPlayersAndMatches(Guid tournamentId, int? round);
+        Tournament? FindOneWithPlayersAndMatches(Guid tournamentId);
     }
 }

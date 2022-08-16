@@ -18,5 +18,10 @@ namespace Labo.DAL.Repositories
                 .Include(m => m.Black)
                 .Where(m => m.TournamentId == tournamentId && m.Round == round);
         }
+
+        public Match? FindOneWithTournament(int id)
+        {
+            return _entities.Include(m => m.Tournament).FirstOrDefault(m => m.Id == id);
+        }
     }
 }

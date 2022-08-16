@@ -89,7 +89,7 @@ namespace Labo.API.Controllers
             }
             catch (TournamentException ex)
             {
-                return BadRequest(ex.Message);
+                return Forbid(ex.Message);
             }
             catch (Exception)
             {
@@ -112,7 +112,30 @@ namespace Labo.API.Controllers
             }
             catch (TournamentException ex)
             {
-                return BadRequest(ex.Message);
+                return Forbid(ex.Message);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        [HttpPatch("{id}/nextRound")]
+        [Authorize(Roles = "Admin")]
+        public IActionResult ValidateRound(Guid id)
+        {
+            try
+            {
+                _tournamentService.ValidateRound(id);
+                return NoContent();
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (TournamentException ex)
+            {
+                return Forbid(ex.Message);
             }
             catch (Exception)
             {
