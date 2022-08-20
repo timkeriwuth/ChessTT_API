@@ -36,7 +36,11 @@ namespace Labo.BLL.Services
             {
                 throw new KeyNotFoundException();
             }
-            if(match.Tournament.CurrentRound != match.Round)
+            if (match.Tournament.Status != TournamentStatus.InProgress)
+            {
+                throw new TournamentException("Cannot update a match the tournament is not in progress");
+            }
+            if (match.Tournament.CurrentRound != match.Round)
             {
                 throw new TournamentException("Cannot update a match if the round has ended");
             }

@@ -22,4 +22,12 @@
     <ProjectReference Include="..\Labo.IL\Labo.IL.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\Labo.docx.pdf" />
+  </ItemGroup>
+
 </Project>

@@ -18,16 +18,18 @@ namespace Labo.BLL.DTO.Matches
             BlackId = m.BlackId;
             WhiteId = m.WhiteId;
             Result = m.Result;
-            White = new UserDTO(m.White);
-            Black = new UserDTO(m.Black);
+            WhiteName = m.White.Username;
+            BlackName = m.Black.Username;
+            Round = m.Round;
         }
 
         public int Id { get; set; }
         public Guid TournamentId { get; set; }
-        public UserDTO Black { get; set; }
+        public string BlackName { get; set; }
         public Guid BlackId { get; set; }
-        public UserDTO White { get; set; }
+        public string WhiteName { get; set; }
         public Guid WhiteId { get; set; }
         public MatchResult Result { get; set; }
+        public int Round { get; set; }
     }
 }

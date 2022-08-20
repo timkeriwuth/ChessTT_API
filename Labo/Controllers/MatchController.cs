@@ -21,7 +21,7 @@ namespace Labo.API.Controllers
         }
 
         [HttpGet]
-        public IActionResult Get([FromQuery][Required]Guid tournamentId, [FromQuery]int? round)
+        public IActionResult Get([FromQuery]Guid tournamentId, [FromQuery]int? round)
         {
             try
             {
@@ -39,11 +39,11 @@ namespace Labo.API.Controllers
 
         [HttpPatch("{id}/result")]
         [Authorize(Roles = "Admin")]
-        public IActionResult Patch([FromRoute] int id, [FromQuery][Required] MatchResult result)
+        public IActionResult Patch([FromRoute] int id, [FromBody]MatchResultDTO dto)
         {
             try
             {
-                _matchService.UpdateResult(id, result);
+                _matchService.UpdateResult(id, dto.Result);
                 return NoContent();
             }
             catch (KeyNotFoundException)
@@ -52,7 +52,7 @@ namespace Labo.API.Controllers
             }
             catch(TournamentException ex)
             {
-                return Forbid(ex.Message);
+                return BadRequest(ex.Message);
             }
             catch (Exception)
             {

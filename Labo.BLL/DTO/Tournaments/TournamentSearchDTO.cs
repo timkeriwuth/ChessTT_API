@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Labo.BLL.DTO.Tournaments
 {
-    public class TournamentCriteriaDTO
+    public class TournamentSearchDTO
     {
         public int Offset { get; set; } = 0;
         public string? Name { get; set; }

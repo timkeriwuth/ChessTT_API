@@ -19,17 +19,17 @@ namespace Labo.IL.Services
             _smtpClient.Credentials = new NetworkCredential(_config.Username, _config.Password);
         }
 
-        public void Send(string subject, string message, params string[] to)
+        public async Task SendAsync(string subject, string message, params string[] to)
         {
             using MailMessage mail = CreateMail(subject, message, to);
-            _smtpClient.Send(mail);
+            await _smtpClient.SendMailAsync(mail);
         }
 
-        public void Send(string subject, string message, Attachment attachment, params string[] to)
+        public async Task SendAsync(string subject, string message, Attachment attachment, params string[] to)
         {
             using MailMessage mail = CreateMail(subject, message, to);
             mail.Attachments.Add(attachment);
-            _smtpClient.Send(mail);
+            await _smtpClient.SendMailAsync(mail);
         }
 
         private MailMessage CreateMail(string subject, string message, string[] to)

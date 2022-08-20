@@ -22,7 +22,7 @@ namespace Labo.BLL.Services
             _mailer = mailer;
         }
 
-        public IEnumerable<TournamentDTO> Find(TournamentCriteriaDTO criteria, Guid userId)
+        public IEnumerable<TournamentDTO> Find(TournamentSearchDTO criteria, Guid userId)
         {
             User? u = _userRepository.FindOne(userId);
 
@@ -44,7 +44,7 @@ namespace Labo.BLL.Services
             });
         }
 
-        public int Count(TournamentCriteriaDTO criteria)
+        public int Count(TournamentSearchDTO criteria)
         {
             return _tournamentRepository.CountByCriteria(
                 criteria.Name, 
@@ -54,10 +54,10 @@ namespace Labo.BLL.Services
             );
         }
 
-        public TournamentDetailsDTO GetWithPlayers(Guid tournamentId, int? round, Guid userId)
+        public TournamentDetailsDTO GetWithPlayers(Guid tournamentId, Guid userId)
         {
             User? u = _userRepository.FindOne(userId);
-            Tournament? tournament = _tournamentRepository.FindOneWithPlayersAndMatches(tournamentId, round);
+            Tournament? tournament = _tournamentRepository.FindOneWithPlayersAndMatches(tournamentId);
             if (tournament is null)
             {
                 throw new KeyNotFoundException();
@@ -89,17 +89,17 @@ namespace Labo.BLL.Services
             Tournament newTournament = _tournamentRepository.Add(t);
             IEnumerable<User> canParticipatePlayers = _userRepository
                 .Find(u => CanRegister(u, newTournament));
-            Task.Run(() => { 
-                try
-                {
-                    _mailer.Send(
-                        "New Tournament",
-                        $"<p>A new tournmaent {t.Name} is created</p>",
-                        canParticipatePlayers.Select(p => p.Email).ToArray()
-                    );
-                }
-                catch (Exception) { }
-            });
+
+            try
+            {
+                _mailer.SendAsync(
+                    "New Tournament",
+                    $"<p>A new tournmaent {t.Name} is created</p>",
+                    canParticipatePlayers.Select(p => p.Email).ToArray()
+                );
+            }
+            catch (Exception) { }
+
             return t.Id;
         }
 
@@ -115,18 +115,17 @@ namespace Labo.BLL.Services
                 throw new TournamentException("Cannot remove a tournament that has already started");
             }
             _tournamentRepository.Remove(t);
-            Task.Run(() =>
+
+            try
             {
-                try
-                {
-                    _mailer.Send(
-                        "Tournament canceled",
-                        $"<p>The tournament {t.Name} has been canceled</p>",
-                        t.Players.Select(p => p.Email).ToArray()
-                    );
-                }
-                catch (Exception) { }
-            });
+                _mailer.SendAsync(
+                    "Tournament canceled",
+                    $"<p>The tournament {t.Name} has been canceled</p>",
+                    t.Players.Select(p => p.Email).ToArray()
+                );
+            }
+            catch (Exception) { }
+
 
             return id;
         }
@@ -140,6 +139,7 @@ namespace Labo.BLL.Services
             }
             CheckStart(t);
             t.Status = TournamentStatus.InProgress;
+            t.CurrentRound = 1;
             GenerateMatches(t);
             _tournamentRepository.Update(t);
         }
@@ -260,7 +260,7 @@ namespace Labo.BLL.Services
             }
             if (t.Matches.Any(m => m.Round <= t.CurrentRound && m.Result == MatchResult.NotPlayed))
             {
-                throw new TournamentException("Cannot validate a round when the the matches are not played");
+                throw new TournamentException("Cannot validate a round when the all the matches are not played");
             }
         }
 
@@ -336,6 +336,35 @@ namespace Labo.BLL.Services
         private static void GenerateMatches(Tournament t)
         {
             List<Guid> players = t.Players.Select(p => p.Id).ToList();
+            if(players.Count % 2 == 1)
+            {
+                players.Add(default);
+            }
+            for(int round = 1; round < players.Count * 2 - 1; round++) 
+            {
+                for(int i = 0; i < players.Count / 2; i++)
+                {
+                    if(players[i] != default && players[players.Count - 1 - i] != default)
+                    {
+                        t.Matches.Add(new Match
+                        {
+                            TournamentId = t.Id,
+                            WhiteId = round % 2 == 1 ? players[i] : players[players.Count - 1 - i],
+                            BlackId = round % 2 == 1 ? players[players.Count - 1 - i] : players[i],
+                            Round = round,
+                            Result = MatchResult.NotPlayed,
+                        });
+                    }
+                }
+                InsertLastItemToSecondPlace(players);
+            }
+
+        }
+
+        private static void InsertLastItemToSecondPlace(List<Guid> players)
+        {
+            players.Insert(1, players.Last());
+            players.RemoveAt(players.Count - 1);
         }
     }
 }

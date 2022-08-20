@@ -22,7 +22,7 @@ namespace Labo.API.Controllers
 
         [HttpGet]
         [Produces(typeof(IEnumerable<TournamentDTO>))]
-        public IActionResult Get([FromQuery] TournamentCriteriaDTO criteria)
+        public IActionResult Get([FromQuery] TournamentSearchDTO criteria)
         {
             try
             {
@@ -35,12 +35,13 @@ namespace Labo.API.Controllers
             }
         }
 
-        [HttpGet("{id})")]
-        public IActionResult Get(Guid id, [FromQuery]int? round)
+        [HttpGet("{id}")]
+        [Produces(typeof(IEnumerable<TournamentDetailsDTO>))]
+        public IActionResult Get(Guid id)
         {
             try
             {
-                TournamentDetailsDTO dto = _tournamentService.GetWithPlayers(id, round, User.GetId());
+                TournamentDetailsDTO dto = _tournamentService.GetWithPlayers(id, User.GetId());
                 return Ok(dto);
             }
             catch (KeyNotFoundException)
@@ -88,7 +89,7 @@ namespace Labo.API.Controllers
             }
             catch (TournamentException ex)
             {
-                return Forbid(ex.Message);
+                return BadRequest(ex.Message);
             }
             catch (Exception)
             {
@@ -111,7 +112,7 @@ namespace Labo.API.Controllers
             }
             catch (TournamentException ex)
             {
-                return Forbid(ex.Message);
+                return BadRequest(ex.Message);
             }
             catch (Exception)
             {
@@ -135,7 +136,7 @@ namespace Labo.API.Controllers
             }
             catch (TournamentException ex)
             {
-                return Forbid(ex.Message);
+                return BadRequest(ex.Message);
             }
             catch (Exception)
             {

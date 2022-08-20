@@ -57,7 +57,7 @@ namespace Labo.API
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Tournament Management API", Version = "v1" });
 
-                OpenApiSecurityScheme securitySchema = new OpenApiSecurityScheme
+                OpenApiSecurityScheme securitySchema = new()
                 {
                     Name = "Authorization",
                     In = ParameterLocation.Header,
@@ -75,7 +75,8 @@ namespace Labo.API
                 c.AddSecurityRequirement(securityRequirement);
             });
 
-            builder.Services.AddCors(options => options.AddDefaultPolicy(b =>
+            builder.Services.AddCors(options 
+                => options.AddDefaultPolicy(b =>
             {
                 b.AllowAnyHeader();
                 b.AllowAnyMethod();
@@ -91,6 +92,8 @@ namespace Labo.API
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
+            app.UseStaticFiles();
 
             app.UseCors();
 

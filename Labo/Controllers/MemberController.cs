@@ -22,11 +22,11 @@ namespace Labo.API.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody] MemberFormDTO dto)
+        public async Task<IActionResult> PostAsync([FromBody] MemberFormDTO dto)
         {
             try
             {
-                _memberService.Add(dto);
+                await _memberService.AddAsync(dto);
                 return NoContent();
             }
             catch (ValidationException ex)

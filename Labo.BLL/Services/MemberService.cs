@@ -32,7 +32,7 @@ namespace Labo.BLL.Services
             _userRepository = userRepository;
         }
 
-        public void Add(MemberFormDTO dto)
+        public async Task AddAsync(MemberFormDTO dto)
         {
             if (_userRepository.Any(u => u.Username.ToLower() == dto.Username.ToLower()))
             {
@@ -51,15 +51,17 @@ namespace Labo.BLL.Services
             u.IsDeleted = false;
 
 
-            using TransactionScope t = new();
-            _userRepository.Add(u);
-            _mailer.Send(
-                "New Registration",
-                RegisterMailTemplate
-                    .Replace("__username__", u.Username)
-                    .Replace("__password__", password),
-                u.Email // replaced in debug
-            );
+            using TransactionScope t = new(TransactionScopeAsyncFlowOption.Enabled);
+            {
+                _userRepository.Add(u);
+                await _mailer.SendAsync(
+                    "New Registration",
+                    RegisterMailTemplate
+                        .Replace("__username__", u.Username)
+                        .Replace("__password__", password),
+                    u.Email // replaced in debug
+                );
+            }
             t.Complete();
         }
 
