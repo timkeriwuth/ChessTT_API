@@ -21,13 +21,14 @@ namespace Labo.API.Controllers
         }
 
         [HttpGet]
-        [Produces(typeof(IEnumerable<TournamentDTO>))]
+        [Produces(typeof(TournamentIndexDTO))]
         public IActionResult Get([FromQuery] TournamentSearchDTO criteria)
         {
             try
             {
-                Response.AddTotalHeader(_tournamentService.Count(criteria));
-                return Ok(_tournamentService.Find(criteria, User.GetId()));
+                int total = _tournamentService.Count(criteria);
+                Response.AddTotalHeader(total);
+                return Ok(new TournamentIndexDTO(total, _tournamentService.Find(criteria, User.GetId())));
             }
             catch (Exception)
             {
