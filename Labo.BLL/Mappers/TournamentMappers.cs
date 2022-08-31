@@ -18,7 +18,7 @@ namespace Labo.BLL.Mappers
                 MaxPlayers = dto.MaxPlayers,
                 WomenOnly = dto.WomenOnly,
                 EndOfRegistrationDate = dto.EndOfRegistrationDate,
-                Categories = (TournamentCategory)dto.Categories.Aggregate(0, (a, c) => a + (int)c),
+                Categories = (TournamentCategory)dto.Categories.Cast<int>().Sum(),
             };
         }
     }

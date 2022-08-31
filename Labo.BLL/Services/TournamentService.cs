@@ -284,10 +284,12 @@ namespace Labo.BLL.Services
             {
                 throw new TournamentException("Not enough players");
             }
-            if (t.EndOfRegistrationDate < DateTime.Now)
-            {
-                throw new TournamentException("Cannot start a tournament before the end of registration date");
-            }
+            // TODO remove comment
+            // temporary removed for testing
+            //if (t.EndOfRegistrationDate > DateTime.Now)
+            //{
+            //    throw new TournamentException("Cannot start a tournament before the end of registration date");
+            //}
         }
 
         private static void CheckCategories(Tournament tournament, User player)
