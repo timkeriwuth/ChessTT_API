@@ -1,4 +1,5 @@
-﻿using Labo.IL.Configurations;
+﻿using Labo.BLL.Interfaces;
+using Labo.IL.Configurations;
 using System.Net;
 using System.Net.Mail;
 

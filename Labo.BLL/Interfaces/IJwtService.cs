@@ -1,4 +1,4 @@
-﻿namespace Labo.IL.Services
+﻿namespace Labo.BLL.Interfaces
 {
     public interface IJwtService
     {

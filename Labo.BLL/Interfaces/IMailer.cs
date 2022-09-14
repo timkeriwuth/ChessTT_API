@@ -1,6 +1,6 @@
 ﻿using System.Net.Mail;
 
-namespace Labo.IL.Services
+namespace Labo.BLL.Interfaces
 {
     public interface IMailer
     {

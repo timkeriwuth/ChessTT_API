@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
+using Labo.IL.Services;
+using Labo.BLL.Interfaces;
 
 namespace Labo.API
 {
@@ -31,6 +33,8 @@ namespace Labo.API
 
             MailerConfig mailerConfig = builder.Configuration.GetSection("Smtp").Get<MailerConfig>();
             builder.Services.AddMailer(mailerConfig);
+
+            builder.Services.AddSingleton<IPasswordGenerator, PasswordGenerator>();
 
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(
                 JwtBearerDefaults.AuthenticationScheme, 

@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations;
 using Labo.DL.Entities;
 using Labo.DL.Enums;
 using Labo.BLL.Exceptions;
-using Labo.IL.Services;
 using Labo.BLL.Interfaces;
 
 namespace Labo.BLL.Services

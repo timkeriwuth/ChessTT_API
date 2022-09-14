@@ -1,4 +1,5 @@
-﻿using Labo.IL.Configurations;
+﻿using Labo.BLL.Interfaces;
+using Labo.IL.Configurations;
 using Labo.IL.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.DependencyInjection;

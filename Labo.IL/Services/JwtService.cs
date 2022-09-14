@@ -1,4 +1,5 @@
-﻿using Labo.IL.Configurations;
+﻿using Labo.BLL.Interfaces;
+using Labo.IL.Configurations;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;

@@ -3,8 +3,6 @@ using Labo.BLL.Interfaces;
 using Labo.BLL.Mappers;
 using Labo.DL.Entities;
 using Labo.DL.Enums;
-using Labo.IL.Services;
-using Labo.IL.Utils;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Authentication;
 using System.Transactions;
@@ -16,6 +14,7 @@ namespace Labo.BLL.Services
     {
         private readonly IMailer _mailer;
         private readonly IUserRepository _userRepository;
+        private readonly IPasswordGenerator _passwordGenerator;
 
         private readonly string RegisterMailTemplate = @"
             <h1>Your registration for Mr Checkmate's plateform</h1>
@@ -26,10 +25,11 @@ namespace Labo.BLL.Services
             </div>
         ";
 
-        public MemberService(IMailer mailer, IUserRepository userRepository)
+        public MemberService(IMailer mailer, IUserRepository userRepository, IPasswordGenerator passwordGenerator)
         {
             _mailer = mailer;
             _userRepository = userRepository;
+            _passwordGenerator = passwordGenerator;
         }
 
         public async Task AddAsync(MemberFormDTO dto)
@@ -42,7 +42,7 @@ namespace Labo.BLL.Services
             {
                 throw new ValidationException("This email already exists") { Source = nameof(dto.Email) };
             }
-            string password = PasswordGenerator.Random(8);
+            string password = _passwordGenerator.Random(8);
             User u = dto.ToEntity();
             u.Elo = dto.Elo ?? 1200;
             u.Role = UserRole.Player;

@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Labo.DL\Labo.DL.csproj" />
-    <ProjectReference Include="..\Labo.IL\Labo.IL.csproj" />
     <ProjectReference Include="..\ToolBox.EF\ToolBox.EF.csproj" />
     <ProjectReference Include="..\ToolBox.Security\ToolBox.Security.csproj" />
   </ItemGroup>

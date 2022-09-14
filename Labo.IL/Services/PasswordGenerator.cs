@@ -1,10 +1,11 @@
-﻿using System.Text;
+﻿using Labo.BLL.Interfaces;
+using System.Text;
 
-namespace Labo.IL.Utils
+namespace Labo.IL.Services
 {
-    public static class PasswordGenerator
+    public class PasswordGenerator : IPasswordGenerator
     {
-        public static string Random(int size)
+        public string Random(int size)
         {
             StringBuilder builder = new StringBuilder();
             Random random = new Random();
