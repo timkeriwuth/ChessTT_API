@@ -1,7 +1,7 @@
 ﻿using Labo.BLL.DTO.Matches;
 using Labo.BLL.DTO.Users;
 using Labo.BLL.Exceptions;
-using Labo.DAL.Repositories;
+using Labo.BLL.Interfaces;
 using Labo.DL.Entities;
 using Labo.DL.Enums;
 
@@ -21,7 +21,7 @@ namespace Labo.BLL.Services
         public IEnumerable<MatchDTO> Get(Guid tournamentId, int? round)
         {
             Tournament? tournament = _tournamentRepository.FindOne(tournamentId);
-            if(tournament is null)
+            if (tournament is null)
             {
                 throw new KeyNotFoundException();
             }

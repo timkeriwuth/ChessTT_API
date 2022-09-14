@@ -1,5 +1,5 @@
 ﻿using Labo.BLL.DTO.Users;
-using Labo.DAL.Repositories;
+using Labo.BLL.Interfaces;
 using Labo.DL.Entities;
 using Labo.IL.Services;
 using System.Security.Authentication;

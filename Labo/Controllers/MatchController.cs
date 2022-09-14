@@ -1,6 +1,6 @@
 ﻿using Labo.BLL.DTO.Matches;
 using Labo.BLL.Exceptions;
-using Labo.BLL.Services;
+using Labo.BLL.Interfaces;
 using Labo.DL.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;

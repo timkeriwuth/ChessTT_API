@@ -1,6 +1,6 @@
 ﻿using Labo.API.Extensions;
 using Labo.BLL.Exceptions;
-using Labo.BLL.Services;
+using Labo.BLL.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,7 +18,7 @@ namespace Labo.API.Controllers
         }
 
         [HttpPost("{id}")]
-        [Authorize(Roles = "Admin, Player")]
+        [Authorize]
         public IActionResult Post(Guid id)
         {
             try
@@ -45,7 +45,7 @@ namespace Labo.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin, Player")]
+        [Authorize]
         public IActionResult Delete(Guid id)
         {
             try

@@ -1,6 +1,6 @@
 ﻿using Labo.BLL.DTO.Users;
 
-namespace Labo.BLL.Services
+namespace Labo.BLL.Interfaces
 {
     public interface IMemberService
     {

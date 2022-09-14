@@ -1,7 +1,7 @@
 ﻿using Labo.BLL.DTO.Matches;
 using Labo.DL.Enums;
 
-namespace Labo.BLL.Services
+namespace Labo.BLL.Interfaces
 {
     public interface IMatchService
     {

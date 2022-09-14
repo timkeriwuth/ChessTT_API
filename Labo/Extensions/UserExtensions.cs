@@ -6,7 +6,7 @@ namespace Labo.API.Extensions
     {
         public static Guid GetId(this ClaimsPrincipal claims)
         {
-            string? value =  claims.FindFirst(ClaimTypes.Sid)?.Value;
+            string? value =  claims.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             return value is not null ? new Guid(value) : Guid.Empty;
         }
 

@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Labo.BLL\Labo.BLL.csproj" />
     <ProjectReference Include="..\Labo.DL\Labo.DL.csproj" />
     <ProjectReference Include="..\ToolBox.EF\ToolBox.EF.csproj" />
     <ProjectReference Include="..\ToolBox.Security\ToolBox.Security.csproj" />

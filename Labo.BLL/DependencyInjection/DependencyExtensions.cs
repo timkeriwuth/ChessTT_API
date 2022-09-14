@@ -1,4 +1,5 @@
-﻿using Labo.BLL.Services;
+﻿using Labo.BLL.Interfaces;
+using Labo.BLL.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Labo.BLL.DependencyInjection

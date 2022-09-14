@@ -1,7 +1,7 @@
 ﻿using Labo.DL.Entities;
 using ToolBox.EF.Repository;
 
-namespace Labo.DAL.Repositories
+namespace Labo.BLL.Interfaces
 {
     public interface IMatchRepository : IRepository<Match>
     {

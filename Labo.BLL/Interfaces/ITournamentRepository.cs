@@ -2,9 +2,9 @@
 using Labo.DL.Enums;
 using ToolBox.EF.Repository;
 
-namespace Labo.DAL.Repositories
+namespace Labo.BLL.Interfaces
 {
-    public interface ITournamentRepository: IRepository<Tournament>
+    public interface ITournamentRepository : IRepository<Tournament>
     {
         int CountByCriteria(string? name, TournamentCategory? category, IEnumerable<TournamentStatus>? statuses, bool wonenOnly = false);
         IEnumerable<Tournament> FindWithPlayersByCriteriaOrderByCreationDateDesc(string? name, TournamentCategory? category, IEnumerable<TournamentStatus>? statuses, bool wonenOnly = false, int offset = 0, int limit = 10);

@@ -1,6 +1,6 @@
 ﻿using Labo.API.DTO;
 using Labo.BLL.DTO.Users;
-using Labo.BLL.Services;
+using Labo.BLL.Interfaces;
 using Labo.IL.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Authentication;

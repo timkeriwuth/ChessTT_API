@@ -2,7 +2,7 @@
 using Labo.API.Extensions;
 using Labo.BLL.DTO.Tournaments;
 using Labo.BLL.Exceptions;
-using Labo.BLL.Services;
+using Labo.BLL.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;

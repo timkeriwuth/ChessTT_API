@@ -44,7 +44,7 @@ namespace Labo.IL.Services
 
         private IEnumerable<Claim> CreateClaims(string identifier, string email, string role)
         {
-            yield return new Claim(ClaimTypes.Sid, identifier);
+            yield return new Claim(ClaimTypes.NameIdentifier, identifier);
             yield return new Claim(ClaimTypes.Role, role);
             yield return new Claim(ClaimTypes.Email, email);
         }

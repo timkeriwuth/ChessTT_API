@@ -1,7 +1,7 @@
 ﻿using Labo.API.DTO;
 using Labo.API.Extensions;
 using Labo.BLL.DTO.Users;
-using Labo.BLL.Services;
+using Labo.BLL.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;

@@ -1,6 +1,6 @@
 ﻿using Labo.BLL.DTO.Tournaments;
 
-namespace Labo.BLL.Services
+namespace Labo.BLL.Interfaces
 {
     public interface ITournamentService
     {
